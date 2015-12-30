@@ -1,0 +1,79 @@
+====================================================================================================
+============================================== README ==============================================
+====================================================================================================
+This document contains all steps in order to initialize the Hedgehog Software Controller.
+
+====================================================================================================
+
+If you just need to initialize an SD card, you may want to use the image of an existing SD card and just copy it onto the new SD card.
+This can be done via executing the following steps:
+
+1) Insert SD card to PC and check which devices (partitions) are mounted via 
+df -h
+On the Hedgehog Development PC it is mostly /dev/sdb which is assumed subsequently.
+
+2) Unmount all partitions from the SD card. On a new SD card there is just one partition that is unmounted via
+sudo umount /dev/sdb1
+
+3) Copy the existing image onto the new SD card via
+sudo dd bs=4M if=hedgehogswc.img of=/dev/sdb
+given that the SD card device is sdb
+
+4) To prepare the HedgehogSWC Software, put the SD card into the Development PC and pull the repository using Smartgit.
+
+5) Start the Raspberry PI with the SD card and set the correct time using for example
+sudo date -s "Jul 5 08:10"
+and build the HedgehogSWC software via 
+make clean
+make
+
+
+====================================================================================================
+
+TODO: TO BE REVISITED (INCLUDE SETTING TIME AND REVIEW STEPS)
+On the other hand, if you want to configure everything from scratch, do the following steps:
+
+1) Initialize SD card with Raspbian operating system (source: https://www.raspberrypi.org/documentation/installation/installing-images/linux.md)
+   - Insert SD card to PC and check which devices (partitions) are mounted via 
+     df -h
+     On the Hedgehog Development PC it is mostly /dev/sdb which is assumed subsequently.
+   - Unmount all partitions from the SD card. On a new SD card there is just one partition that is unmounted via
+     sudo umount /dev/sdb1
+   - Write the Raspbian image to the SD card:
+     sudo dd bs=4M if=~/Desktop/2015-02-16-raspbian-wheezy.img of=/dev/sdb
+   - Remove SD card
+
+2) Start the Raspberry PI with the initialized SD card for the first time and make the following configurations in the config tool:
+   - 1 Expand Filesystem
+   - 2 Change User Password: pi
+   - 3 Enable Boot: Desktop Log in as user "pi" at the graphical desktop
+   - 4 Internalization Options: Change timezone to Vienna
+   - 8 Advanced options: A8 Serial Disable!
+   
+3) Put the SD card back into the Hedgehog Development PC 
+
+4) In order to set the keyboard layout right, change in the /etc/default/keyboard file 
+   XKBLAYOUT=”gb”
+   to
+   XKBLAYOUT=”de”
+
+5) Clone the HedgehogSWC repository at ssh://git@nas.krofitsch.at/Hedgehog/HedgehogSWC into /home/pi/HedgehogSWC.
+
+6) Setup automatic software building at startup by adding the following line to /etc/rc.local:
+   sudo -u pi make --directory=/home/pi/HedgehogSWC
+   TODO this does not work properly. Check that! Maybe because of time?
+
+7) Edit /home/pi/.config/openbox/lxde-rc.xml in order to set lxterminal to maximize
+   Therefore, add
+   
+   <application name="lxterminal">
+        <fullscreen>yes</fullscreen>
+   </application>
+
+   before the closing </applications> tag at the end of the file.
+
+8) To configure autostart, add the following line to /etc/xdg/lxsession/LXDE-pi/autostart:
+   @lxterminal --working-directory=/home/pi/HedgehogSWC --command ./andrixswc
+   
+9) Check if everything worked! Startup the Raspberry PI with a connected HDMI screen. After startup, check if it shows a terminal in fullscreen mode with the initial output from the Hedgehog software, beginning with “Hedgehog successfully started”.
+
