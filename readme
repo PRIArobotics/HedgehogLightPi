@@ -1,9 +1,6 @@
-====================================================================================================
-============================================== README ==============================================
-====================================================================================================
 This document contains all steps in order to initialize the Hedgehog Software Controller.
 
-====================================================================================================
+====================================================
 
 If you just need to initialize an SD card, you may want to use the image of an existing SD card and just copy it onto the new SD card.
 This can be done via executing the following steps:
@@ -28,7 +25,7 @@ make clean
 make
 
 
-====================================================================================================
+======================================================
 
 TODO: TO BE REVISITED (INCLUDE SETTING TIME AND REVIEW STEPS)
 On the other hand, if you want to configure everything from scratch, do the following steps:
